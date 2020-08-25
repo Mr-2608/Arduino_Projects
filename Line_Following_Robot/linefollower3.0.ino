@@ -38,7 +38,7 @@ void loop() {
   Serial.println(c);
   Serial.println(d);
   Serial.println(e);
- if (a==0&&b==1&&c==0)              // move forvard:
+ if (a==0&&b==1&&c==0)              // move forward:
 { digitalWrite (motor1,HIGH);
  digitalWrite (motor2,LOW);
  digitalWrite (motor4,HIGH);
