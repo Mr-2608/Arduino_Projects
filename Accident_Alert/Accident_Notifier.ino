@@ -3,7 +3,7 @@
 #include <MPU6050_tockn.h>
 #include <TinyGPS++.h>
 
-SoftwareSerial GSMserial(2,3); // Rx = 2 , Tx = 3
+SoftwareSerial GSMserial(3,4); // Rx = 3 , Tx = 4
 MPU6050 mpu6050(Wire);
 TinyGPSPlus GPS;
 
@@ -14,7 +14,7 @@ float Angle_X;
 void setup() {
   mpu6050_intailazion();
   Gps_intailazion();
-  GSMserial.begin(9600);
+  Gsm_intailazion(); 
 }
 
 void loop() {
@@ -32,7 +32,7 @@ void mpu6050_intailazion(){
 void Gsm_intailazion(){
    delay(1000);
    GSMserial.begin(9600);
-   GSMserial.write("AT+CMGF=1");
+   GSMserial.println("AT+CMGF=1");
    delay(1000);
   }
   
@@ -49,6 +49,7 @@ void Gps_Data(){
   {
     gps_latitude = String(GPS.location.lat());
     gps_longitude = String(GPS.location.lng());
+    
  }
 }
 
@@ -58,7 +59,7 @@ void AngleX(){
 }
 
 void Condition_sendMSG(){
-  if(Angle_X > 50.0 or Angle_X < -50.0){
+  if(Angle_X > 40.0 or Angle_X < -40.0){
     GSMserial.println("AT+CMGS=\"+91XXXXXXXXXX\"\r");
     delay(1000);
     GSMserial.println("Your Vechical No. RJ14XXXXXX met with an accident at location:");
