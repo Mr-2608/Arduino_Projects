@@ -4,11 +4,11 @@
 #include <TinyGPS++.h>
 
 SoftwareSerial GSMserial(2,3); // Rx = 2 , Tx = 3
-MPU6050_tockn mpu6050(Wire);
+MPU6050 mpu6050(Wire);
 TinyGPSPlus GPS;
 
-float gps_latitude;
-float gps_longitude;
+String gps_latitude;
+String gps_longitude;
 float Angle_X;
 
 void setup() {
@@ -20,7 +20,7 @@ void setup() {
 void loop() {
   Gps_Data();
   AngleX();
-  Condition_sendMSG()
+  Condition_sendMSG();
 }
 
 void mpu6050_intailazion(){
@@ -37,18 +37,20 @@ void Gsm_intailazion(){
   }
   
 void Gps_intailazion(){
-  Serial.begin(115200); // Serial Monitor use for GPS module
+  Serial.begin(9600); // Serial Monitor use for GPS module
   }
 
 void Gps_Data(){
-  while (Serial.available()){
-  GPS.encode(GPS.read());
-  if (GPS.location.isUpdated()){
-    gps_latitude = GPS.location.lat();
-    gps_longitude = GPS.location.lng();
-   }
+  while(Serial.available())
+  {
+    GPS.encode(Serial.read());
   }
+  if(GPS.location.isUpdated()) 
+  {
+    gps_latitude = String(GPS.location.lat());
+    gps_longitude = String(GPS.location.lng());
  }
+}
 
 void AngleX(){
   mpu6050.update();
@@ -56,10 +58,12 @@ void AngleX(){
 }
 
 void Condition_sendMSG(){
-  if(Angle_X > 75.0){
-    GSMserial.println("AT+CMGS=\"+919694678634\"\r");
+  if(Angle_X > 50.0 or Angle_X < -50.0){
+    GSMserial.println("AT+CMGS=\"+91XXXXXXXXXX\"\r");
     delay(1000);
-    GSMserial.println();
+    GSMserial.println("Your Vechical No. RJ14XXXXXX met with an accident at location:");
+    delay(1000);
+    GSMserial.println("https://www.google.com/maps/@"+gps_latitude+","+gps_longitude+",14z");
     delay(1000);
     GSMserial.println((char)26);
     delay(1000);
